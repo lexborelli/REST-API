@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
  // In the Users model, added a one-to-many association between the User and Course models using the hasMany() method.
 
   User.associate = (models) => {
-    User.hasMany(models.Movie, {
+    User.hasMany(models.Course, {
       foreignKey: {
        fieldName: 'userId',
        allowNull: false,
