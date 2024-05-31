@@ -3,6 +3,7 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
+const routes = require('./routes');
 
 const { sequelize } = require('./models');
 
@@ -28,6 +29,9 @@ app.use(morgan('dev'));
     console.error('Error connecting to the database:', error);
   }
 })();
+
+//add routes
+app.use('/api', routes);
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {

@@ -1,8 +1,8 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+const { Model, DataTypes } = require('sequelize');
+
+
+module.exports = (sequelize) => {
   class Course extends Model {}
   Course.init({
     title: {
@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         fieldName: 'userId',
         allowNull: false,
       },
+      as: 'user', //alias
     });
   };
 
