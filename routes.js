@@ -31,6 +31,7 @@ router.get('/users', asyncHandler(async (req, res) => {
 
 //api/users- POST route creates a new user account
 //the application should include validation to ensure that the following required values are properly submitted in the request body: firstName, lastName, emailAddress, password
+//If any of these required values are not properly submitted, the application should respond by sending a 400 HTTP status code and validation errors.
 
 router.post('/users', asyncHandler(async (req, res) => {
     try {
@@ -44,8 +45,9 @@ router.post('/users', asyncHandler(async (req, res) => {
       if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
         const errors = error.errors.map(err => err.message);
         res.status(400).json({ errors });
-    } else
+    } else {
         throw error;
+     }
     }
 })); 
     
@@ -79,32 +81,51 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 }));
 
 //api/courses - POST: Create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code and no content.
+//the application should include validation to ensure that the following required values are properly submitted in the request body: title, description
+//If any of these required values are not properly submitted, the application should respond by sending a 400 HTTP status code and validation errors.
 router.post('/courses', asyncHandler(async (req, res) => {
     try {
         const course =  await Course.create(req.body);
         //set the Location header to "/", and return a 201 HTTP status code and no content.
         res.status(201).location(`/courses/${course.id}`).end();
-        } catch(err) {
-            res.status(500).json({message: err.message});
-        }
+    } catch(error) {
+        console.log('Error: ', error.name);
+    //If any of these required values are not properly submitted, the application should respond by sending a 400 HTTP status code and validation errors.
+      if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+        const errors = error.errors.map(err => err.message);
+        res.status(400).json({ errors });
+    } else {
+        throw error;
+       }
+    }
     }));
 
 //api/courses/:id - PUT: Update the corresponding course and return a 204 HTTP status code and no content.
-
+// the application should include validation to ensure that the following required values are properly submitted in the request body: title, description
+//If any of these required values are not properly submitted, the application should respond by sending a 400 HTTP status code and validation errors.
 router.put('/courses/:id', asyncHandler(async (req, res) => {
     
     try {
       const course = await course.findByPk(req.params.id);
-     
+     if (course) {
       if (course.id === req.currentUser.id) {
         await course.update(req.body);
         res.status(204).end();
       } else {
-        res.status(404).json({message: 'Couse was not found'});
+        res.status(403).json({ message: 'You are not an authorized user' });
+      }
+    } else {
+        res.status(404).json({message: 'Course was not found'});
       }
     
-    } catch(err) {
-        res.status(500).json({message: err.message});
+    } catch(error) {
+    //If any of these required values are not properly submitted, the application should respond by sending a 400 HTTP status code and validation errors.
+      if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+        const errors = error.errors.map(err => err.message);
+        res.status(400).json({ errors });
+    } else {
+        throw error;
+       }
     }
 }));
 
