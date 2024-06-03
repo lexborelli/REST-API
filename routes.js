@@ -34,9 +34,9 @@ router.get('/users', asyncHandler(async (req, res) => {
 
 router.post('/users', asyncHandler(async (req, res) => {
     try {
-        const User =  await User.create(req.body);
+       await User.create(req.body);
      // set the status to 201 created and end the response.
-        res.status(201).end();  
+        res.status(201).location('/').end();  
     
     } catch(err) {
         console.log('Error: ', error.name);
