@@ -30,43 +30,25 @@ router.get('/users', asyncHandler(async (req, res) => {
 }));
 
 //api/users- POST route creates a new user account
+//the application should include validation to ensure that the following required values are properly submitted in the request body: firstName, lastName, emailAddress, password
+
 router.post('/users', asyncHandler(async (req, res) => {
     try {
-    const User =  await User.create(req.body);
-    //set the Location header to "/", and return a 201 HTTP status code and no content.
-    res.status(201).location('/').end();
+        const User =  await User.create(req.body);
+     // set the status to 201 created and end the response.
+        res.status(201).end();  
+    
     } catch(err) {
-        res.json({message: err.message});
+        console.log('Error: ', error.name);
+      if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+        const errors = error.errors.map(err => err.message);
+        res.status(400).json({ errors });
+    } else
+        throw error;
     }
 })); 
     
-    //Validate that we have a `name` value
     
-    //if (!user.name) {
-           // errors.push('Please provide a value for a "name"');
-        //}
-     //validate that we have an `email` value 
-    //if (!user.email) {
-        //errors.push('Please provide a value for "email"');
-    //} 
-    //validate that we have `password` value
-    //if (!user.password) {
-      //  errors.push('Please provide a value for "password"');
-    //} else {
-      //  user.password = bcrypt.hashSync(user.password, 10);
-    //}
-
-    //if there are any errors
-    //if (errors.length > 0) {
-        //return the validation errors to the client
-      //  res.status(400).json({ errors });
-    //} else {
-        // add the user to the `users` array
-      //  users.push(user);
-
-        // set the status to 201 created and end the response.
-        //res.status(201).end();  
-    //}
 
 
 //api/courses-Get route for courses, Return all courses including the User object associated with each course and a 200 HTTP status code.
