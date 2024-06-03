@@ -40,6 +40,7 @@ router.post('/users', asyncHandler(async (req, res) => {
     
     } catch(err) {
         console.log('Error: ', error.name);
+    //If any of these required values are not properly submitted, the application should respond by sending a 400 HTTP status code and validation errors.
       if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
         const errors = error.errors.map(err => err.message);
         res.status(400).json({ errors });
