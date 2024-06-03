@@ -59,7 +59,7 @@ router.get('/courses', asyncHandler(async (req, res) => {
     const courses = await Course.findAll({
         include : [
             {
-                Model: 'User',
+                Model: User,
                 as: 'user',
             },
         ],
@@ -69,10 +69,11 @@ router.get('/courses', asyncHandler(async (req, res) => {
 
 //api/courses/:-GET: Return the corresponding course including the User object associated with that course and a 200 HTTP status code.
 router.get('/courses/:id', asyncHandler(async (req, res) => {
+    
     const course = await Course.findByPk(req.params.id, { 
         include: [
             {
-            Model: 'User',
+            Model: User,
             as: 'user',
             }
         ]
