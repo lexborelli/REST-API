@@ -12,7 +12,7 @@ const { Model } = require('sequelize');
 const router = express.Router();
 
 //api/users - GET: 
-router.get('/users', asyncHandler(async (req, res) => {
+router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
    // Get the user from the request body.
     const user = req.currentUser;
     if (!user) {
@@ -83,7 +83,7 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 //api/courses - POST: Create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code and no content.
 //the application should include validation to ensure that the following required values are properly submitted in the request body: title, description
 //If any of these required values are not properly submitted, the application should respond by sending a 400 HTTP status code and validation errors.
-router.post('/courses', asyncHandler(async (req, res) => {
+router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     try {
         const course =  await Course.create(req.body);
         //set the Location header to "/", and return a 201 HTTP status code and no content.
@@ -103,7 +103,7 @@ router.post('/courses', asyncHandler(async (req, res) => {
 //api/courses/:id - PUT: Update the corresponding course and return a 204 HTTP status code and no content.
 // the application should include validation to ensure that the following required values are properly submitted in the request body: title, description
 //If any of these required values are not properly submitted, the application should respond by sending a 400 HTTP status code and validation errors.
-router.put('/courses/:id', asyncHandler(async (req, res) => {
+router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     
     try {
       const course = await course.findByPk(req.params.id);
@@ -131,7 +131,7 @@ router.put('/courses/:id', asyncHandler(async (req, res) => {
 
 
 //api/courses/:id - DELETE: Delete the corresponding course and return a 204 HTTP status code and no content.
-router.delete('/courses/:id', asyncHandler(async(req, res) => {
+router.delete('/courses/:id', authenticateUser, asyncHandler(async(req, res) => {
     try {
         const course = await Course.findByPk(req.params.id); 
         if (course) {

@@ -1,5 +1,6 @@
 'use strict'; 
 
+
 const auth = require('basic-auth');
 const bcrypt = require('bcryptjs');
 const { User } = require('../models');
@@ -12,16 +13,16 @@ exports.authenticateUser = async (req, res, next) => {
     const credentials = auth(req);
 
     if (credentials) {
-        const user = await User.findOne({ where: {username: credentials.name} });
+        const user = await User.findOne({ where: {emailAddress: credentials.name} });
         if (user) {
             const authenticated = bcrypt
-            .compareSync(credentials.pass, user.confirmedPassword);
+            .compareSync(credentials.pass, user.password);
          if (authenticated) {
             //if passwords match
-            console.log(`Authentication successful for username: ${user.username} `);
+            console.log(`Authentication successful for Email Address: ${user.emailAddress} `);
             req.currentUser = user;
             } else {
-                message = `Authentication failure for username: ${user.username}`
+                message = `Authentication failure for Email Address: ${user.emailAddress}`
             } 
         } else {
             message = `User not found for username: ${credentials.name}`;
