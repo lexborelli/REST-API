@@ -16,7 +16,7 @@ router.get('/users', asyncHandler(async (req, res) => {
    // Get the user from the request body.
     const user = req.currentUser;
     if (!user) {
-        return res.status(400).json({ message: 'User cannot be found' });
+        return res.status(404).json({ message: 'User cannot be found' });
 
     }
     //This will return all properties and values for the currently authenticated User along with a 200 HTTP status code
@@ -135,14 +135,22 @@ router.delete('/courses/:id', asyncHandler(async(req, res) => {
     try {
         const course = await Course.findByPk(req.params.id); 
         if (course) {
+            if (course.userId === req.currentUsr.id) {
             course.destroy(); 
             res.status(204).end();
         } else {
-            res.status(404).json({message: "Quote not found"});
+            res.status(403).json({message: "Quote not found"});
         }
-    } catch (err) {
-        res.status(500).json({message: err.message});
-
+     }
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+            const errors = error.errors.map(err => err.message);
+            res.status(400).json({ errors });
+        } else {
+            throw error;
+        }
     }
 }));
+
+module.exports = router; 
 
