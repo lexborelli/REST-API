@@ -107,9 +107,9 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
 router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     
     try {
-      const course = await course.findByPk(req.params.id);
+      const course = await Course.findByPk(req.params.id);
      if (course) {
-      if (course.id === req.currentUser.id) {
+      if (course.userId === req.currentUser.id) {
         await course.update(req.body);
         res.status(204).end();
       } else {
@@ -136,8 +136,8 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async(req, res) => 
     try {
         const course = await Course.findByPk(req.params.id); 
         if (course) {
-            if (course.userId === req.currentUsr.id) {
-            course.destroy(); 
+            if (course.userId === req.currentUser.id) {
+            await course.destroy(); 
             res.status(204).end();
         } else {
             res.status(403).json({message: "Quote not found"});
