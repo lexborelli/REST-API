@@ -39,11 +39,11 @@ router.post('/users', asyncHandler(async (req, res) => {
      // set the status to 201 created and end the response.
         res.status(201).location('/').end();  
     
-    } catch(error) {
-        console.log('Error: ', error.name);
+    } catch (error) {
     //If any of these required values are not properly submitted, the application should respond by sending a 400 HTTP status code and validation errors.
       if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
         const errors = error.errors.map(err => err.message);
+        console.log('Error: ' + errors);
         res.status(400).json({ errors });
     } else {
         throw error;
@@ -56,8 +56,8 @@ router.post('/users', asyncHandler(async (req, res) => {
 
 //api/courses-Get route for courses, Return all courses including the User object associated with each course and a 200 HTTP status code.
 router.get('/courses', asyncHandler(async (req, res) => {
-    const courses = await Course.findAll({
-        include : [
+    const courses = await Course.findAll(
+        {include : [
             {
                 Model: User,
                 as: 'user',
@@ -70,8 +70,8 @@ router.get('/courses', asyncHandler(async (req, res) => {
 //api/courses/:-GET: Return the corresponding course including the User object associated with that course and a 200 HTTP status code.
 router.get('/courses/:id', asyncHandler(async (req, res) => {
     
-    const course = await Course.findByPk(req.params.id, { 
-        include: [
+    const course = await Course.findByPk(req.params.id, 
+        {include: [
             {
             Model: User,
             as: 'user',
